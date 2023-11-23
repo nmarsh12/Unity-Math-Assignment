@@ -7,33 +7,6 @@ using UnityEngine.UIElements;
 
 public class Math : MonoBehaviour
 {    
-    public int[] chestWeights = { 100, 60, 50, 25, 15 };
-    int[] woodWeights = { 100, 50, 40, 25, 5 };
-    int[] bronzeWeights = { 75, 60, 50, 30, 15 };
-    int[] silverWeights = { 50, 50, 80, 50, 30 };
-    int[] goldWeights = { 25, 25, 40, 100, 75 };
-    int[] platinumWeights = { 0, 0, 25, 50, 50 };
-
-    public ChestType woodChest;
-    public ChestType bronzeChest;
-    public ChestType silverChest;
-    public ChestType goldChest;
-    public ChestType platinumChest;
-    
-    // Start is called before the first frame update
-    void Initialize()
-    {
-        woodChest = new ChestType("Wooden Chest", woodWeights);
-        bronzeChest = new ChestType("Bronze Chest", bronzeWeights);
-        silverChest = new ChestType("Silver Chest", silverWeights);
-        goldChest = new ChestType("Gold Chest", goldWeights);
-        platinumChest = new ChestType("Platinum Chest", platinumWeights);
-    }
-
-    void Start(){
-        Initialize();
-    }
-
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)){
             RollAndPrintResult();
@@ -47,14 +20,13 @@ public class Math : MonoBehaviour
     }
 
     ChestType RollForChestType() {
-        ChestType[] chestTypes = { woodChest, bronzeChest, silverChest, goldChest, platinumChest };
-        return chestTypes[RollForIndex(chestWeights)];
+        return Data.allChests[RollForIndex(Data.chestWeights)];
     }
 
     string RollForLootRarity( ChestType selectedChest ) {
-        string[] rarities = { "Common", "Uncommon", "Rare", "Epic", "Legendary" };
+        
         int rarityIndex = RollForIndex(selectedChest.rarityWeights);
-        return rarities[rarityIndex];
+        return Data.rarities[rarityIndex];
     }
 
     // this was the most (only) complex part so it probably warrants an explanation, even though it's definitely fine as a black box
@@ -96,9 +68,7 @@ public class Math : MonoBehaviour
 
 public class ChestType
 {
-    [SerializeField]
     public string name;
-    [SerializeField]
     public int[] rarityWeights;
 
     public ChestType(string _name, int[] weights){
@@ -107,20 +77,46 @@ public class ChestType
     }
 }
 
+// this is the stupidest thing i've ever done
+// i should never be allowed to code again after this
 [CustomEditor(typeof(Math))]
-public class Data : Editor {
+public class MathInspectorPanel : Editor {
     public override VisualElement CreateInspectorGUI()
     {
-        // Create a new VisualElement to be the root of our inspector UI
         VisualElement inspectorPanel = new VisualElement();
 
-        for (int i = 0; i < chestWeights.Length; i++) {}
-        // Add a simple label
-        inspectorPanel.Add(new Label("This is a custom inspector"));
+        inspectorPanel.Add(new Label("Chest Types:"));
+        for (int i = 0; i < Data.allChests.Length; i++) {
+            inspectorPanel.Add(new Label("- " + Data.allChests[i].name));
+        }
+        inspectorPanel.Add(new Label(""));
 
-        // Return the finished inspector UI
+        for (int i = 0; i < Data.allChests.Length; i++) {
+            inspectorPanel.Add(new Label(Data.allChests[i].name + " Drop Rarity Weights:"));
+            for (int j = 0; j < Data.allChests[i].rarityWeights.Length; j++) {
+                inspectorPanel.Add(new Label(Data.rarities[j] + ": " + Data.allChests[j].rarityWeights[j]));
+            }
+            inspectorPanel.Add(new Label(""));
+        }
+
         return inspectorPanel;
     }
 }
 
+public static class Data {
+    public static int[] chestWeights = { 100, 60, 50, 25, 15 };
+    public static int[] woodWeights = { 100, 50, 40, 25, 5 };
+    public static int[] bronzeWeights = { 75, 60, 50, 30, 15 };
+    public static int[] silverWeights = { 50, 50, 80, 50, 30 };
+    public static int[] goldWeights = { 25, 25, 40, 100, 75 };
+    public static int[] platinumWeights = { 0, 0, 25, 50, 50 };
 
+    public static ChestType woodChest = new ChestType("Wooden Chest", woodWeights);
+    public static ChestType bronzeChest = new ChestType("Bronze Chest", bronzeWeights);
+    public static ChestType silverChest = new ChestType("Silver Chest", silverWeights);
+    public static ChestType goldChest = new ChestType("Gold Chest", goldWeights);
+    public static ChestType platinumChest = new ChestType("Platinum Chest", platinumWeights);
+    
+    public static ChestType[] allChests = { woodChest, bronzeChest, silverChest, goldChest, platinumChest };
+    public static string[] rarities = { "Common", "Uncommon", "Rare", "Epic", "Legendary" };
+}
