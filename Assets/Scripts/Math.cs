@@ -85,16 +85,16 @@ public class MathInspectorPanel : Editor {
     {
         VisualElement inspectorPanel = new VisualElement();
 
-        inspectorPanel.Add(new Label("Chest Types:"));
+        inspectorPanel.Add(new Label("Chest Types and Drop Weights:"));
         for (int i = 0; i < Data.allChests.Length; i++) {
-            inspectorPanel.Add(new Label("- " + Data.allChests[i].name));
+            inspectorPanel.Add(new Label("- " + Data.allChests[i].name + ": " + Data.chestWeights[i]));
         }
         inspectorPanel.Add(new Label(""));
 
         for (int i = 0; i < Data.allChests.Length; i++) {
             inspectorPanel.Add(new Label(Data.allChests[i].name + " Drop Rarity Weights:"));
             for (int j = 0; j < Data.allChests[i].rarityWeights.Length; j++) {
-                inspectorPanel.Add(new Label(Data.rarities[j] + ": " + Data.allChests[j].rarityWeights[j]));
+                inspectorPanel.Add(new Label(Data.rarities[j] + ": " + Data.allChests[i].rarityWeights[j]));
             }
             inspectorPanel.Add(new Label(""));
         }
