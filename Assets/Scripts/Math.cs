@@ -1,26 +1,38 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 public class Math : MonoBehaviour
 {    
-    static int[] chestWeights = { 100, 60, 50, 25, 15 };
-    static int[] woodWeights = { 100, 50, 40, 25, 5 };
-    static int[] bronzeWeights = { 75, 60, 50, 30, 15 };
-    static int[] silverWeights = { 50, 50, 80, 50, 30 };
-    static int[] goldWeights = { 25, 25, 40, 100, 75 };
-    static int[] platinumWeights = { 0, 0, 25, 50, 50 };
+    public int[] chestWeights = { 100, 60, 50, 25, 15 };
+    int[] woodWeights = { 100, 50, 40, 25, 5 };
+    int[] bronzeWeights = { 75, 60, 50, 30, 15 };
+    int[] silverWeights = { 50, 50, 80, 50, 30 };
+    int[] goldWeights = { 25, 25, 40, 100, 75 };
+    int[] platinumWeights = { 0, 0, 25, 50, 50 };
 
-    /*public ChestType woodChest;
+    public ChestType woodChest;
     public ChestType bronzeChest;
     public ChestType silverChest;
     public ChestType goldChest;
-    public ChestType platinumChest;*/
-    public ChestType woodChest = new ChestType("Wooden Chest", woodWeights);
-    public ChestType bronzeChest = new ChestType("Bronze Chest", bronzeWeights);
-    public ChestType silverChest = new ChestType("Silver Chest", silverWeights);
-    public ChestType goldChest = new ChestType("Gold Chest", goldWeights);
-    public ChestType platinumChest = new ChestType("Platinum Chest", platinumWeights);
+    public ChestType platinumChest;
+    
+    // Start is called before the first frame update
+    void Initialize()
+    {
+        woodChest = new ChestType("Wooden Chest", woodWeights);
+        bronzeChest = new ChestType("Bronze Chest", bronzeWeights);
+        silverChest = new ChestType("Silver Chest", silverWeights);
+        goldChest = new ChestType("Gold Chest", goldWeights);
+        platinumChest = new ChestType("Platinum Chest", platinumWeights);
+    }
+
+    void Start(){
+        Initialize();
+    }
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.Space)){
@@ -82,11 +94,11 @@ public class Math : MonoBehaviour
     }
 }
 
-// i hate unity
-[System.Serializable]
 public class ChestType
 {
+    [SerializeField]
     public string name;
+    [SerializeField]
     public int[] rarityWeights;
 
     public ChestType(string _name, int[] weights){
@@ -94,3 +106,21 @@ public class ChestType
         this.rarityWeights = weights;
     }
 }
+
+[CustomEditor(typeof(Math))]
+public class Data : Editor {
+    public override VisualElement CreateInspectorGUI()
+    {
+        // Create a new VisualElement to be the root of our inspector UI
+        VisualElement inspectorPanel = new VisualElement();
+
+        for (int i = 0; i < chestWeights.Length; i++) {}
+        // Add a simple label
+        inspectorPanel.Add(new Label("This is a custom inspector"));
+
+        // Return the finished inspector UI
+        return inspectorPanel;
+    }
+}
+
+
